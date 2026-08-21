@@ -1,4 +1,4 @@
-<div align="center">
+<img width="1617" height="1457" alt="屏幕截图 2026-08-21 131619" src="https://github.com/user-attachments/assets/38ab5ba3-a36a-4a66-99af-b3002886e6a8" /><div align="center">
   <h2>VidFlow</h2>
   
   <p>
@@ -27,22 +27,24 @@
 
 **登录与注册**
 
-![VidFlow 登录与注册](docs/images/login-register.png)
+<img width="1636" height="935" alt="屏幕截图 2026-08-21 131534" src="https://github.com/user-attachments/assets/ad725635-fe26-4b60-9380-76332aef9b69" />
+
 
 **视频工作台**
 
-![VidFlow 视频工作台](docs/images/video-library.png)
+<img width="1630" height="914" alt="屏幕截图 2026-08-21 131543" src="https://github.com/user-attachments/assets/161f6540-9653-4a94-88e9-7b39af8d9b95" />
+
 
 **Agent 目标输入**
 
-![VidFlow Agent 目标输入](docs/images/agent-compose.png)
+<img width="1639" height="934" alt="屏幕截图 2026-08-21 131550" src="https://github.com/user-attachments/assets/971acc99-8099-447c-9259-ad7e87eb9a5f" />
+
 
 **Agent 分析结果**
 
-<img width="2886" height="1656" alt="b89cf519f7189cf823507d5c17b0d88d" src="https://github.com/user-attachments/assets/8bfeed0e-28df-4527-86bf-e549f5516dcc" />
+<img width="1637" height="941" alt="屏幕截图 2026-08-21 131602" src="https://github.com/user-attachments/assets/53f7d89c-e6a5-45c5-b16e-d487ca3f1a76" />
 
-<img width="1776" height="1708" alt="a52abccc6447591c6f9a66ad948c5709" src="https://github.com/user-attachments/assets/9e04ecca-a2a5-4d59-89d7-8f4329858070" />
-
+<img width="1617" height="1457" alt="屏幕截图 2026-08-21 131619" src="https://github.com/user-attachments/assets/d80df7af-d598-4c01-a958-191d53d0675c" />
 
 
 用户完成登录后，可以上传视频并在工作台管理解析任务；选择视频并输入分析目标后，可以手动选择分析模式，也可以交给 Agent 自动判断。工作台会展示结构化结论、时间戳证据、执行计划、阶段轨迹与质量评估，并支持基于同一视频继续追问。
