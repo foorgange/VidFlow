@@ -34,6 +34,12 @@ public class AiService {
     private static final long CONTEXT_LOCK_WAIT_SECONDS = 300;
     /** 内容级归属索引的有效期，与结果复用键保持同一量级。 */
     private static final Duration CONTEXT_OWNER_TTL = Duration.ofDays(7);
+    /** 追问历史在 Redis 中的前缀。 */
+    private static final String FOLLOW_UP_HISTORY_KEY_PREFIX = "followup:history:";
+    /** 每个视频最多保留的追问轮数。 */
+    private static final int FOLLOW_UP_HISTORY_MAX = 10;
+    /** 追问历史的保留时间。 */
+    private static final Duration FOLLOW_UP_HISTORY_TTL = Duration.ofDays(7);
 
     private final MediaFileMapper mediaFileMapper;
     private final VideoContextService videoContextService;
@@ -282,11 +288,14 @@ public class AiService {
         try {
             AgentState previous = originalGoal == null
                     ? null : checkpointService.loadResult(mediaId, originalGoal, resolvedMode);
-            String followUpGoal = contextualQuestion(originalGoal, previous, question);
+            List<String> history = loadFollowUpHistory(mediaId);
+            String followUpGoal = contextualQuestion(originalGoal, previous, question, history);
             VideoContext followUpContext = new VideoContext(
                     context.source(), followUpGoal, context.segments());
-            return agentLoopService.run(
+            String answer = agentLoopService.run(
                     mediaId, followUpContext, modeRegistry.of(resolvedMode)).result().toMarkdown();
+            saveFollowUpHistory(mediaId, question, answer);
+            return answer;
         } finally {
             telemetry.flush(traceId);
             telemetry.clear();
@@ -381,16 +390,50 @@ public class AiService {
                 .toList());
     }
 
-    private String contextualQuestion(String originalGoal, AgentState previous, String question) {
-        if (originalGoal == null || previous == null || previous.result() == null) return question;
-        String previousResult = previous.result().toMarkdown();
-        if (previousResult.length() > 4_000) previousResult = previousResult.substring(0, 4_000);
-        return """
-                这是对同一视频的继续追问。请结合原始视频证据和已有分析回答当前问题。
-                原始目标：%s
-                已有分析：%s
-                当前追问：%s
-                """.formatted(originalGoal, previousResult, question);
+    private String contextualQuestion(String originalGoal, AgentState previous, String question, List<String> history) {
+        StringBuilder sb = new StringBuilder("这是对同一视频的继续追问。请结合原始视频证据和已有分析回答当前问题。\n");
+        if (originalGoal != null && !originalGoal.isBlank()) {
+            sb.append("原始目标：").append(originalGoal).append("\n");
+        }
+        if (previous != null && previous.result() != null) {
+            String previousResult = previous.result().toMarkdown();
+            if (previousResult.length() > 4_000) previousResult = previousResult.substring(0, 4_000);
+            sb.append("已有分析：").append(previousResult).append("\n");
+        }
+        if (history != null && !history.isEmpty()) {
+            sb.append("历史对话：\n");
+            for (String item : history) {
+                sb.append(item).append("\n");
+            }
+        }
+        sb.append("当前追问：").append(question);
+        return sb.toString();
+    }
+
+    private List<String> loadFollowUpHistory(Long mediaId) {
+        try {
+            List<String> history = redisTemplate.opsForList().range(followUpHistoryKey(mediaId), 0, FOLLOW_UP_HISTORY_MAX - 1);
+            return history == null ? List.of() : history;
+        } catch (Exception e) {
+            log.warn("读取追问历史失败 mediaId={}", mediaId, e);
+            return List.of();
+        }
+    }
+
+    private void saveFollowUpHistory(Long mediaId, String question, String answer) {
+        try {
+            String key = followUpHistoryKey(mediaId);
+            String entry = "问：" + question + "\n答：" + answer;
+            redisTemplate.opsForList().rightPush(key, entry);
+            redisTemplate.opsForList().trim(key, -FOLLOW_UP_HISTORY_MAX, -1);
+            redisTemplate.expire(key, FOLLOW_UP_HISTORY_TTL);
+        } catch (Exception e) {
+            log.warn("保存追问历史失败 mediaId={}", mediaId, e);
+        }
+    }
+
+    private String followUpHistoryKey(Long mediaId) {
+        return FOLLOW_UP_HISTORY_KEY_PREFIX + mediaId;
     }
 
     private void persistResult(MediaFile mediaFile, AgentState agentState) {
