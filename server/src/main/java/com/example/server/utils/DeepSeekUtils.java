@@ -9,12 +9,19 @@ import com.example.server.dto.VideoRetrievalIntent;
 import com.example.server.service.AgentExecutionBudget;
 import com.example.server.service.AgentTelemetry;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.langchain4j.agent.tool.ToolExecutionRequest;
+import dev.langchain4j.agent.tool.ToolSpecification;
+import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.SystemMessage;
+import dev.langchain4j.data.message.ToolExecutionResultMessage;
 import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.exception.HttpException;
 import dev.langchain4j.exception.NonRetriableException;
 import dev.langchain4j.exception.RetriableException;
 import dev.langchain4j.model.chat.ChatModel;
+import dev.langchain4j.model.chat.request.ChatRequest;
+import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -22,7 +29,9 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
@@ -445,6 +454,40 @@ public class DeepSeekUtils {
             if (cause instanceof RuntimeException runtimeException) throw runtimeException;
             throw new IllegalStateException("模型调用失败", cause);
         }
+    }
+
+    /**
+     * 轻量 Function Calling：把工具描述传给模型，模型返回 tool call 后由调用方执行，
+     * 执行结果回填给模型，直到模型给出最终文本回答。
+     */
+    public String chatWithTools(
+            String stage,
+            String systemPrompt,
+            String userPrompt,
+            List<ToolSpecification> toolSpecifications,
+            Function<String, String> toolExecutor,
+            int maxRounds) {
+        List<ChatMessage> messages = new ArrayList<>();
+        messages.add(SystemMessage.from(systemPrompt));
+        messages.add(UserMessage.from(userPrompt));
+        for (int round = 0; round < maxRounds; round++) {
+            ChatRequest request = ChatRequest.builder()
+                    .messages(messages)
+                    .toolSpecifications(toolSpecifications)
+                    .build();
+            ChatResponse response = chatModel.chat(request);
+            AiMessage aiMessage = response.aiMessage();
+            if (aiMessage.hasToolExecutionRequests()) {
+                messages.add(aiMessage);
+                for (ToolExecutionRequest toolRequest : aiMessage.toolExecutionRequests()) {
+                    String result = toolExecutor.apply(toolRequest.arguments());
+                    messages.add(ToolExecutionResultMessage.from(toolRequest, result));
+                }
+            } else {
+                return aiMessage.text();
+            }
+        }
+        throw new IllegalStateException("Function calling exceeded max rounds: " + stage);
     }
 
     private boolean isRetriableModelFailure(Throwable error) {
