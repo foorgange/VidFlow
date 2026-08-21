@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
+/** 音频导出：ffmpeg 抽取 mp3 到临时文件（15 分钟超时），供 ASR 切片使用。 */
 @Service
 public class AudioExportService {
 

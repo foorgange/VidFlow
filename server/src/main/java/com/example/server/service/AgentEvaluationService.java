@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/** 质量评估：基于 Checkpoint 结果与用户反馈计算结构化/时间戳/证据支持等指标。供前端 evaluation 接口与离线评测使用。 */
 @Service
 public class AgentEvaluationService {
 

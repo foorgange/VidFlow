@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+/** 分段转写：ffmpeg 60s 切片 + SiliconFlow ASR 逐片调用（单片失败隔离），输出 TranscriptSegment 列表。 */
 @Service
 public class SegmentedTranscriptionService {
 

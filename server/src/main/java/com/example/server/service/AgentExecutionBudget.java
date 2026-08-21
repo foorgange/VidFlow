@@ -3,9 +3,8 @@ package com.example.server.service;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Carries the current Agent deadline through the synchronous orchestration thread.
- * Model calls use the remaining time as their own timeout, so a slow provider cannot
- * silently run past the task budget.
+ * 执行预算：用 ThreadLocal 把任务截止时间传递到同步编排线程，
+ * 模型调用以剩余时间为自身超时，阶段间检查预算是否耗尽（防止慢模型拖穿任务预算）。
  */
 public final class AgentExecutionBudget {
 

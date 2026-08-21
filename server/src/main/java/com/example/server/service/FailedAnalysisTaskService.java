@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.regex.Pattern;
 
+/** 失败任务台账：落库（脱敏 + 截断）、查询、管理员重放（写回原 Topic）。 */
 @Service
 public class FailedAnalysisTaskService {
 

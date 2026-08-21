@@ -39,6 +39,7 @@ import java.util.NoSuchElementException;
         // 若与容器默认的 min 值冲突会在启动期抛 "consumeThreadMin is larger than consumeThreadMax"。
         // 本环境无法编译校验属性名，故留给确认版本后再补，避免引入启动失败风险。
         maxReconsumeTimes = 2)
+/** 视频分析任务消费者：Redisson 锁 + 幂等 + 最多 3 次投递 + 失败台账/死信主题。任务由 AnalysisDispatchService 投递。 */
 public class VideoAnalysisConsumer implements RocketMQListener<AnalysisTaskMsg> {
 
     private static final Logger log = LoggerFactory.getLogger(VideoAnalysisConsumer.class);

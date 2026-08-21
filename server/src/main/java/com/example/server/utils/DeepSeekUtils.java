@@ -38,6 +38,7 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+/** DeepSeek（LangChain4j）调用封装：Planner/Executor/Critic/检索意图/模式分类的结构化调用与重试。 */
 @Component
 public class DeepSeekUtils {
 

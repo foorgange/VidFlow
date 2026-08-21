@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import java.time.LocalDateTime;
 
+/** 媒体文件实体（media_files 表）：上传元数据 + 转写文本/AI 摘要/封面。 */
 @Data
 @TableName("media_files")
 public class MediaFile {

@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Set;
 
+/** 媒体接口：分片上传（初始化/进度/传片/合并）、整文件与链接导入、列表/删除/播放地址。 */
 @RestController
 @RequestMapping("/media")
 public class MediaController {

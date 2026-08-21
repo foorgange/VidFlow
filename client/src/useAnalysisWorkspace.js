@@ -1,3 +1,4 @@
+// useAnalysisWorkspace.js —— 分析工作台组合式函数：分析/追问/证据检索/反馈/计划修订的状态与流程编排。
 import { computed, ref } from 'vue'
 import { apiRequest } from './api'
 import { DEMO_EVALUATION, DEMO_ITEM, DEMO_PLAN, DEMO_RESULT, DEMO_TRACE } from './demoData'

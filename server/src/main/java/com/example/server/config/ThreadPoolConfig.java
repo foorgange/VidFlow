@@ -7,6 +7,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.ThreadPoolExecutor;
 
+/** 线程池配置：AI 编排/ASR/OCR/模型调用 4 个独立有界线程池，队列满即拒绝（AbortPolicy）。 */
 @Configuration
 @EnableAsync
 public class ThreadPoolConfig {

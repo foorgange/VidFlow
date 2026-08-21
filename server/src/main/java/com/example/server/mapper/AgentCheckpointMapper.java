@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+/** agent_checkpoints 表 Mapper（注解 SQL 直写），被 AgentCheckpointRepository 使用。 */
 @Mapper
 public interface AgentCheckpointMapper {
 

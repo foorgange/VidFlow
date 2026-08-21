@@ -8,6 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 
+/** Web 配置：CORS 白名单 + 注册 AuthInterceptor（media/analysis/admin/logout 需登录）。 */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 

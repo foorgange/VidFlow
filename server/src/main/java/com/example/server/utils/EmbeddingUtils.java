@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+/** Embedding 客户端：调用硅基流动 BGE-M3 生成向量，失败返回空列表（上层据此降级）。 */
 @Component
 public class EmbeddingUtils {
 

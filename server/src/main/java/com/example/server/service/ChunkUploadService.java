@@ -31,6 +31,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+/** 分片上传：uploadId 管理 + 先写 MinIO 再记 Redis Set + 合并（Redisson 锁 + completedKey 幂等 + 算 MD5）。 */
 @Service
 public class ChunkUploadService {
 

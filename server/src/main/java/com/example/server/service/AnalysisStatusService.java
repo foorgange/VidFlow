@@ -6,6 +6,7 @@ import com.example.server.dto.TaskStage;
 import com.example.server.dto.TaskStatus;
 import org.springframework.stereotype.Service;
 
+/** 分析任务状态推导：Checkpoint 阶段 + activeKey → QUEUED/PROCESSING/COMPLETED/FAILED。 */
 @Service
 public class AnalysisStatusService {
 

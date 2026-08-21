@@ -1,3 +1,4 @@
+// demoData.js —— 演示模式（?demo）使用的示例数据：媒体、计划、结果、Trace、评测。
 export const DEMO_ITEM = {
   id: 1001,
   filename: '数据结构课程 · 二叉树遍历.mp4',

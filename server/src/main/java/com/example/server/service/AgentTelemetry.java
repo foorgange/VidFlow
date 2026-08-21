@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.DoubleAdder;
 import java.util.concurrent.atomic.LongAdder;
 
+/** Agent 运行 Trace：阶段耗时/调用次数/Token/预算统计，内存 + Redis 持久化，供 /agent-trace 查询。 */
 @Service
 public class AgentTelemetry {
 

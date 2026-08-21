@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Locale;
 
+/** 证据确定性校验：时间戳落在 VideoSegment、来源 ASR/OCR、原文包含匹配。被 AgentLoop 与评测复用。 */
 @Service
 public class EvidenceVerificationService {
 

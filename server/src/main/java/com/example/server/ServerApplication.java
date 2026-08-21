@@ -5,6 +5,7 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
+/** 应用入口（Spring Boot 启动类），强制以 SERVLET Web 模式启动。 */
 @SpringBootApplication
 @MapperScan("com.example.server.mapper")
 public class ServerApplication {

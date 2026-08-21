@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 
+/** Tesseract OCR 封装：调用本地 tesseract（chi_sim+eng）识别关键帧文字，2 分钟超时。 */
 @Component
 public class OcrUtils {
 

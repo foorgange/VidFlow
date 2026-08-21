@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 
+/** 媒体接入：MultipartFile 直接入库 / 视频链接经 yt-dlp 下载后入库，均先算 MD5。 */
 @Service
 public class MediaIngestService {
 

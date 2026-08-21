@@ -1,3 +1,4 @@
+// markdown.js —— Markdown 安全渲染：marked 渲染 + 白名单标签/属性过滤，防止 XSS。被 App.vue 使用。
 import { marked } from 'marked'
 
 const ALLOWED_TAGS = new Set([

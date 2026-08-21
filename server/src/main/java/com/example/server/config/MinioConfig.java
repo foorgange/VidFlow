@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/** MinIO 客户端配置：启动时自动建桶；媒体访问统一走短时效预签名 URL（不开放桶读权限）。 */
 @Configuration
 public class MinioConfig {
 

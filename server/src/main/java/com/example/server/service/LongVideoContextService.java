@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/** 长视频上下文：5 分钟分块 + 摘要/关键词/向量，按目标粗召回并展开原始证据（24000 字符预算）。 */
 @Service
 public class LongVideoContextService {
 

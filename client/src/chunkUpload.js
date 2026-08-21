@@ -1,3 +1,4 @@
+// chunkUpload.js —— 分片上传与断点续传：5MB 分片、并发上传、失败退避重传、速度统计、合并。被 App.vue 调用。
 import { apiRequest } from './api'
 
 const CHUNK_SIZE = 5 * 1024 * 1024

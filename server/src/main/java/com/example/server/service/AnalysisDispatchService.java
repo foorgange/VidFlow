@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 
+/** 分析任务投递入口：限流（RRateLimiter）+ activeKey 幂等 + 发送 RocketMQ，返回受理结果。 */
 @Service
 public class AnalysisDispatchService {
 

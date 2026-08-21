@@ -21,6 +21,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/** Qdrant 向量库客户端（OkHttp 直连 REST）：集合管理、写入、按 mediaId 隔离召回；禁用时降级。 */
 @Service
 public class QdrantVectorStore {
 

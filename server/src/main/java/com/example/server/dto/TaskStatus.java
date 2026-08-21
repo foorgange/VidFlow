@@ -1,5 +1,6 @@
 package com.example.server.dto;
 
+/** 任务状态（state + result + message），供状态查询与 SSE 事件复用。 */
 public record TaskStatus(State state, String result, String message) {
 
     public enum State {

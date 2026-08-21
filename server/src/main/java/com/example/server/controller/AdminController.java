@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/** 管理接口：失败分析任务台账查询与重放（仅 admin 角色）。联动 FailedAnalysisTaskService。 */
 @RestController
 @RequestMapping("/admin/failed-analysis")
 public class AdminController {

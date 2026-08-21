@@ -42,6 +42,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.function.Supplier;
 
+/** 分析接口：意图路由、提交 AI 分析、追问、证据检索、反馈、修订重跑、SSE 订阅与元信息查询。 */
 @RestController
 @RequestMapping("/analysis")
 public class AnalysisController {

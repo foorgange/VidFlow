@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/** 视频转写门面：校验输入后委托 SegmentedTranscriptionService 输出全文。 */
 @Component
 public class VideoTranscriptionService {
 

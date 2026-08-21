@@ -33,6 +33,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+/** 时序多模态上下文构建：ASR 60s 切片 + 场景检测/OCR 关键帧双分支并行，按 60s 窗口融合为 VideoSegment。 */
 @Service
 public class VideoContextService {
 

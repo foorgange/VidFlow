@@ -21,6 +21,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.util.UUID;
 
+/** MinIO 操作封装：上传/下载/删除/分片读写/预签名地址/顺序合并。被上传链路与媒体服务调用。 */
 @Component
 public class MinioUtils {
 

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+/** 离线评测入口（agent.evaluation.enabled=true 时启动）：跑 golden-video-tasks.json 的 4 个 Golden Case。 */
 @Component
 @ConditionalOnProperty(name = "agent.evaluation.enabled", havingValue = "true")
 public class OfflineAgentEvaluationRunner implements ApplicationRunner {

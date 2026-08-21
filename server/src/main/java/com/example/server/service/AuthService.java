@@ -19,6 +19,7 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
+/** 认证服务：注册/登录（PBKDF2 加盐哈希）、Redis 会话令牌、登录失败限流、admin 校验。 */
 @Service
 public class AuthService {
 

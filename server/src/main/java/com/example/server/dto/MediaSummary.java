@@ -4,6 +4,7 @@ import com.example.server.entity.MediaFile;
 
 import java.time.LocalDateTime;
 
+/** 媒体列表摘要：id/文件名/状态/封面/上传时间。 */
 public record MediaSummary(
         Long id,
         String filename,

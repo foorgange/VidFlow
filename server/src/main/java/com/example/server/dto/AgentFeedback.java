@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import java.time.Instant;
 import java.util.List;
 
+/** 用户反馈（-1/1 评分）与计划修订请求，也用于触发"按新计划重跑"。 */
 public record AgentFeedback(
         @NotNull(message = "mediaId 不能为空")
         Long mediaId,

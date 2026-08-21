@@ -1,3 +1,4 @@
+// api.js —— 统一 API 请求封装：base URL、token 存取、错误解包与响应信封解析。被所有业务模块调用。
 const API_BASE = (import.meta.env?.VITE_API_BASE_URL || '').replace(/\/$/, '')
 const TOKEN_KEY = 'authToken'
 

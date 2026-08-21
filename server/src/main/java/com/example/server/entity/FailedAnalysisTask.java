@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+/** 失败分析任务台账实体（failed_analysis_tasks 表），供管理台查询与重放。 */
 @Data
 @TableName("failed_analysis_tasks")
 public class FailedAnalysisTask {

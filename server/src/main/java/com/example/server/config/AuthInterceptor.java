@@ -12,6 +12,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.nio.charset.StandardCharsets;
 
+/** 登录拦截器：从 Authorization 头解析用户并写入 request attribute；未登录返回统一 401 响应体。注册见 WebConfig。 */
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
 

@@ -2,6 +2,7 @@ package com.example.server.dto;
 
 import java.io.Serializable;
 
+/** RocketMQ 任务消息体：mediaId + action（START/REVISE）+ contentHash + userGoal + mode。 */
 public class AnalysisTaskMsg implements Serializable {
 
     public static final String START_ANALYSIS = "START_ANALYSIS";

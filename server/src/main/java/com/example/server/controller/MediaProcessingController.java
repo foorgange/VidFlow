@@ -30,6 +30,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/** 媒体处理接口：全量文字提取（异步任务 + SSE 进度）与音频导出。联动 TranscriptionTaskService/AudioExportService。 */
 @RestController
 @RequestMapping("/analysis")
 public class MediaProcessingController {

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/** 用户认证接口：注册/登录/登出。联动 AuthService（PBKDF2 密码 + Redis 会话）。 */
 @RestController
 @RequestMapping("/user")
 public class UserController {

@@ -7,6 +7,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 
+/** Redis 消息监听容器：把 VidFlow:task-events 频道消息转发给 TaskEventService（SSE 跨实例广播）。 */
 @Configuration
 public class TaskEventRedisConfig {
 

@@ -1,3 +1,4 @@
+// taskEvents.js —— SSE 任务事件流：订阅/断线指数退避重连（上限 15s）/终态判定，前端进度与结果的来源。
 import { apiRequest } from './api.js'
 import { isTerminalStatus } from './taskEventsPolicy.js'
 

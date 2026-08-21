@@ -1,3 +1,4 @@
+<!-- App.vue —— 单页应用根组件：媒体库、分片上传、Video Agent 工作台、SSE 进度与结果展示。 -->
 <template>
   <div class="app-stage">
     <div class="ambient-noise"></div>

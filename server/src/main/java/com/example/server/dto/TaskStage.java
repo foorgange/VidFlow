@@ -1,5 +1,6 @@
 package com.example.server.dto;
 
+/** 任务阶段枚举：驱动 SSE 进度展示与 Checkpoint 的阶段持久化。 */
 public enum TaskStage {
     QUEUED,
     CONSUMING,

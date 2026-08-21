@@ -27,6 +27,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+/** 媒体领域服务：文件名/类型校验、MD5、媒体记录与 VideoContext 持久化、归属校验、运行时产物清理。 */
 @Service
 public class MediaService {
 

@@ -9,6 +9,7 @@ import java.util.HexFormat;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+/** 任务身份键工具：contentHash 归一 + 模式感知 goalDigest，统一 lock/active/completed/attempts 的 Redis 键。 */
 public final class AnalysisTaskKeys {
 
     private static final Pattern MD5_PATTERN = Pattern.compile("[a-fA-F0-9]{32}");

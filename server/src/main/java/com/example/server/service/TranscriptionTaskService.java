@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 
+/** 全量文字提取任务：Redis activeKey 去重 + 异步执行 + SSE 进度 + 结果写回 media_files。 */
 @Service
 public class TranscriptionTaskService {
 

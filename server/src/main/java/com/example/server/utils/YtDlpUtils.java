@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+/** yt-dlp 封装：下载在线视频到本地临时文件（仅公网 http(s) 链接）。被 MediaIngestService 使用。 */
 @Component
 public class YtDlpUtils {
 
