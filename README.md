@@ -1,4 +1,4 @@
-<img width="1617" height="1457" alt="屏幕截图 2026-08-21 131619" src="https://github.com/user-attachments/assets/38ab5ba3-a36a-4a66-99af-b3002886e6a8" /><div align="center">
+
   <h2>VidFlow</h2>
   
   <p>
