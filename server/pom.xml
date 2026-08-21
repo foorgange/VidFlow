@@ -15,6 +15,8 @@
 
 	<properties>
 		<java.version>21</java.version>
+		<!-- 显式钉住 Lombok 版本，保证 JDK 21+ 下注解处理可用 -->
+		<lombok.version>1.18.44</lombok.version>
 	</properties>
 
 	<dependencies>
@@ -118,6 +120,24 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<!-- 关闭增量/分片编译：maven-compiler-plugin 3.13+ 的 useIncrementalCompilation
+					     会把源码拆成多次 javac 调用，导致 Lombok 生成的访问器在跨批次时不可见
+					     （“找不到符号 setXxx”）。全部源码单次编译，构建结果确定可复现。 -->
+					<useIncrementalCompilation>false</useIncrementalCompilation>
+					<!-- 显式声明注解处理器路径，保证 Lombok 处理器稳定加载（不依赖 classpath 扫描） -->
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>

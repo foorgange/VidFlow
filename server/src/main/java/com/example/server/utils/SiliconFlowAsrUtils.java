@@ -17,10 +17,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * ASR 转写客户端：调用硅基流动（SiliconFlow）网关的音频转写接口，
+ * 默认模型 {@code TeleAI/TeleSpeechASR}（见配置项 {@code ai.asr.url} / {@code ai.asr.model}）。
+ */
 @Component
-public class AliyunAsrUtils {
+public class SiliconFlowAsrUtils {
 
-    private static final Logger log = LoggerFactory.getLogger(AliyunAsrUtils.class);
+    private static final Logger log = LoggerFactory.getLogger(SiliconFlowAsrUtils.class);
     private static final int MAX_ATTEMPTS = 3;
 
     private final String apiKey;
@@ -33,14 +37,18 @@ public class AliyunAsrUtils {
             .retryOnConnectionFailure(true)
             .build();
 
-    public AliyunAsrUtils(@Value("${ai.deepseek.api-key}") String apiKey,
-                          @Value("${ai.asr.url}") String transcriptionUrl,
-                          @Value("${ai.asr.model}") String model) {
+    public SiliconFlowAsrUtils(@Value("${ai.deepseek.api-key}") String apiKey,
+                                @Value("${ai.asr.url}") String transcriptionUrl,
+                                @Value("${ai.asr.model}") String model) {
         this.apiKey = apiKey;
         this.transcriptionUrl = transcriptionUrl;
         this.model = model;
     }
 
+    /**
+     * 把一段音频文件转成文本，最多重试 {@link #MAX_ATTEMPTS} 次。
+     * 网络异常/429/5xx 可重试；4xx（参数、鉴权、格式不支持）直接判定为不可重试。
+     */
     public String audioToText(String filePath) {
         File file = new File(filePath);
         // 这里的音频是本流水线上一步用 ffmpeg 切出来的，缺失属于「意外状态」而非「调用方参数错误」，
@@ -91,6 +99,7 @@ public class AliyunAsrUtils {
         }
     }
 
+    /** 指数退避：第 1 次失败等 1s，第 2 次失败等 2s */
     private void waitBeforeRetry(int attempt) {
         try {
             Thread.sleep(1_000L << attempt);
