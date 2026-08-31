@@ -53,7 +53,7 @@
 
 长视频处理天然是**长耗时、高资源消耗、外部调用成本敏感**的场景。VidFlow 的设计都围绕这一背景展开，可以概括为四层能力。
 
-### 可靠的视频任务链路
+### 🎬 可靠的视频任务链路
 
 > 把大文件上传与耗时的视频解析从请求主链路中剥离，提交即返回，不阻塞、不重复烧钱。
 
@@ -61,7 +61,7 @@
 - **异步削峰** — RocketMQ 将视频解析移出请求线程，提交后立即返回任务 ID，上传接口响应时间由 60 秒以上缩短至 50 毫秒级；Redisson 按「内容指纹 + 分析目标」加锁，拦截并发与重复消费。
 - **成本护栏** — 用户级与全局令牌桶限制 AI 请求速率；ASR 与模型调用采用有限次数的指数退避重试，兜底第三方网络抖动。
 
-### 时序多模态 VideoContext
+### 🧩 时序多模态 VideoContext
 
 > 把语音、画面文字与时间戳融合成一份可检索、可校验的统一上下文。
 
@@ -76,7 +76,7 @@ OCR      前序遍历：根节点、左子树、右子树
 Evidence frame_000125.jpg
 ```
 
-### 有证据约束的 AgentLoop
+### 🔁 有证据约束的 AgentLoop
 
 > 每条结论都必须绑定可在原始视频中核验的时间戳证据，拒绝模型自由发挥。
 
@@ -87,7 +87,7 @@ Evidence frame_000125.jpg
 - **四类结构化产物** — 通用模式生成结论与建议，学习模式生成大纲、自测题与易错点，审查模式定位逻辑漏洞与存疑结论，创作模式提取爆点、标题与口播脚本。
 - **成本可控** — AgentLoop 最多执行两轮，既允许定向修正，也通过轮次上限约束延迟与 Token 成本。
 
-### 长视频检索与断点恢复
+### 🔍 长视频检索与断点恢复
 
 > 面向数小时长视频的分段检索，以及分阶段可恢复的任务状态机。
 
@@ -180,9 +180,9 @@ tesseract --version
 cp .env.example .env
 ```
 
-编辑 `.env`，至少替换数据库、Redis、MinIO、Qdrant 的示例密码并设置 `SILICONFLOW_API_KEY`。全新数据库中 `DB_USERNAME` 与 `MYSQL_APP_USER` 应保持一致；`MYSQL_ROOT_PASSWORD` 仅供数据库初始化使用。密钥只保存在本地 `.env`，不要提交到仓库。
+编辑 `.env`，至少替换数据库、Redis、MinIO、Qdrant 的示例密码并设置 `LLM_API_KEY`（旧版变量名 `SILICONFLOW_API_KEY` 仍然兼容）。全新数据库中 `DB_USERNAME` 与 `MYSQL_APP_USER` 应保持一致；`MYSQL_ROOT_PASSWORD` 仅供数据库初始化使用。密钥只保存在本地 `.env`，不要提交到仓库。
 
-默认 LLM 为 `deepseek-ai/DeepSeek-V3.2`。历史示例模型 `deepseek-ai/DeepSeek-R1-Distill-Qwen-32B` 已被硅基流动禁用，会返回 `Model disabled`。`LLM_TIMEOUT_SECONDS` 默认是 `300`，用于避免长视频证据分析在模型响应尚未返回时过早超时；模型或超时配置变更后需要重启后端。
+后端使用 OpenAI 兼容接口接入第三方大模型：把 `LLM_BASE_URL`、`LLM_API_KEY`、`LLM_MODEL` 指到任意 OpenAI 兼容端点即可（硅基流动、OpenAI、DeepSeek 官方、OpenRouter、Moonshot 等），无需改代码。默认 LLM 为 `deepseek-ai/DeepSeek-V4-Flash`（走硅基流动）。历史示例模型 `deepseek-ai/DeepSeek-R1-Distill-Qwen-32B` 已被硅基流动禁用，会返回 `Model disabled`。`LLM_TIMEOUT_SECONDS` 默认是 `300`，用于避免长视频证据分析在模型响应尚未返回时过早超时；模型或超时配置变更后需要重启后端。
 
 ### 2. 启动中间件
 
@@ -234,7 +234,7 @@ npm run dev
 | 后端无法连接 MySQL 或 Redis | 运行 `docker compose --env-file .env ps`，确认服务健康且 `.env` 密码一致 |
 | 页面提示无法连接后端 | 先访问 `/health`；再检查 `VITE_DEV_PROXY_TARGET` 或 `VITE_API_BASE_URL` |
 | 视频解析提示命令不存在 | 确认 `ffmpeg`、`tesseract` 可在终端执行，必要时配置 `FFMPEG_DIR`、`OCR_COMMAND` |
-| AI 接口返回 401 或模型不可用 | 检查 `SILICONFLOW_API_KEY` 与模型名称，修改后重启后端 |
+| AI 接口返回 401 或模型不可用 | 检查 `LLM_API_KEY`、`LLM_BASE_URL` 与 `LLM_MODEL`，修改后重启后端 |
 | Maven 提示 `maven-default-http-blocker` | 在 `server` 目录执行 `./mvnw -s .mvn/central-settings.xml spring-boot:run`，临时绕过失效的用户级镜像 |
 
 停止本地中间件：

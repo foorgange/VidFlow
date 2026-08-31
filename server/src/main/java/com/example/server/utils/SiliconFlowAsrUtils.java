@@ -37,7 +37,7 @@ public class SiliconFlowAsrUtils {
             .retryOnConnectionFailure(true)
             .build();
 
-    public SiliconFlowAsrUtils(@Value("${ai.deepseek.api-key}") String apiKey,
+    public SiliconFlowAsrUtils(@Value("${ai.asr.api-key:}") String apiKey,
                                 @Value("${ai.asr.url}") String transcriptionUrl,
                                 @Value("${ai.asr.model}") String model) {
         this.apiKey = apiKey;

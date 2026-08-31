@@ -23,6 +23,8 @@ import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.request.ChatRequest;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.openai.OpenAiChatModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -31,6 +33,7 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -38,10 +41,11 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-/** DeepSeek（LangChain4j）调用封装：Planner/Executor/Critic/检索意图/模式分类的结构化调用与重试。 */
+/** OpenAI 兼容接口（LangChain4j）调用封装：Planner/Executor/Critic/检索意图/模式分类的结构化调用与重试。 */
 @Component
 public class DeepSeekUtils {
 
+    private static final Logger log = LoggerFactory.getLogger(DeepSeekUtils.class);
     private static final int MAX_MODEL_ATTEMPTS = 3;
     private static final int MAX_CAUSE_DEPTH = 8;
     private static final String SYSTEM_POLICY = """
@@ -62,12 +66,12 @@ public class DeepSeekUtils {
     private final double inputPricePerMillion;
     private final double outputPricePerMillion;
 
-    public DeepSeekUtils(@Value("${ai.deepseek.api-key}") String apiKey,
-                         @Value("${ai.deepseek.base-url}") String baseUrl,
-                         @Value("${ai.deepseek.model:deepseek-ai/DeepSeek-V3.2}") String modelName,
-                         @Value("${ai.deepseek.timeout-seconds:300}") long timeoutSeconds,
-                         @Value("${ai.deepseek.input-price-per-million:0}") double inputPricePerMillion,
-                         @Value("${ai.deepseek.output-price-per-million:0}") double outputPricePerMillion,
+    public DeepSeekUtils(@Value("${ai.llm.api-key:}") String apiKey,
+                         @Value("${ai.llm.base-url:https://api.siliconflow.cn/v1}") String baseUrl,
+                         @Value("${ai.llm.model:deepseek-ai/DeepSeek-V4-Flash}") String modelName,
+                         @Value("${ai.llm.timeout-seconds:300}") long timeoutSeconds,
+                         @Value("${ai.llm.input-price-per-million:0}") double inputPricePerMillion,
+                         @Value("${ai.llm.output-price-per-million:0}") double outputPricePerMillion,
                          @Value("${agent.budget.max-estimated-cost:0}") double maxEstimatedCost,
                          AgentTelemetry telemetry,
                          ObjectMapper objectMapper,
@@ -81,8 +85,18 @@ public class DeepSeekUtils {
         if (maxEstimatedCost > 0 && (inputPricePerMillion == 0 || outputPricePerMillion == 0)) {
             throw new IllegalArgumentException("启用 Agent 成本预算时必须配置输入和输出 Token 单价");
         }
+        // 校验 OpenAI 兼容接入参数：缺少 API Key、base URL 不合法、模型名为空都应在启动阶段快速失败，
+        // 而不是等到第一次真实调用时返回含糊的 401/404。
+        if (apiKey == null || apiKey.isBlank()) {
+            throw new IllegalArgumentException(
+                    "未配置 LLM API Key：请在 .env 设置 LLM_API_KEY（或旧名 SILICONFLOW_API_KEY）");
+        }
+        String normalizedBaseUrl = normalizeBaseUrl(baseUrl);
+        if (modelName == null || modelName.isBlank()) {
+            throw new IllegalArgumentException("未配置 LLM 模型名：请在 .env 设置 LLM_MODEL");
+        }
         this.chatModel = OpenAiChatModel.builder()
-                .baseUrl(baseUrl)
+                .baseUrl(normalizedBaseUrl)
                 .apiKey(apiKey)
                 .modelName(modelName)
                 // Long-video evidence prompts can take longer than the SDK default timeout.
@@ -96,6 +110,22 @@ public class DeepSeekUtils {
         this.modelTimeoutMs = TimeUnit.SECONDS.toMillis(timeoutSeconds);
         this.inputPricePerMillion = inputPricePerMillion;
         this.outputPricePerMillion = outputPricePerMillion;
+        log.info("LLM 网关已就绪 providerBaseUrl={} model={} timeoutSeconds={}",
+                normalizedBaseUrl, modelName, timeoutSeconds);
+    }
+
+    /** 归一化 OpenAI 兼容 base URL：trim、去尾部斜杠、校验必须为 http(s) 协议。 */
+    private String normalizeBaseUrl(String raw) {
+        String url = raw == null ? "" : raw.trim();
+        if (url.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "未配置 LLM Base URL：请在 .env 设置 LLM_BASE_URL（或旧名 SILICONFLOW_BASE_URL）");
+        }
+        String lower = url.toLowerCase(Locale.ROOT);
+        if (!lower.startsWith("http://") && !lower.startsWith("https://")) {
+            throw new IllegalArgumentException("LLM Base URL 必须以 http:// 或 https:// 开头: " + url);
+        }
+        return url.replaceAll("/+$", "");
     }
 
     /** 兼容旧调用方:无模式指令 = 通用规划,prompt 与引入模式前逐字节一致。 */
